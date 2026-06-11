@@ -41,12 +41,16 @@
         <div class="btn-row">
             <button onclick="startCheckout()" id="checkoutBtn" class="checkout-btn" style="display: none;">PROCEED TO GREENLIGHT</button>
             <button onclick="clearCart()" class="clear-btn">[ CLEAR CART INVENTORY ]</button>
-            <a href="./index.html" class="back-link">&larr; CONTINUE SHOPPING</a>
+            <a href="index.html" class="back-link">&larr; CONTINUE SHOPPING</a>
         </div>
     </div>
     <script>
-        // CRITICAL CONGFIGURATION PORTAL LINK
-        const glLink = "https://gl.me/u/fmMSWk6qfXdd"; 
+        // ========================================================
+        // 🛑 CRITICAL ACTION REQUIRED: 
+        // Replace the placeholder below with your real gl.me URL!
+        // Example: "https://gl.me"
+        // ========================================================
+        const glLink = "PASTE_YOUR_REAL_GL_ME_URL_HERE"; 
 
         const products = {
             'sprite': { name: "2D Retro Sprite Pack", price: 5 },
@@ -95,9 +99,11 @@
             const email = document.getElementById('buyerEmail').value;
             if (!email.includes('@') || !email.includes('.')) return;
             
+            // 1. Instantly clear storage memory
             sessionStorage.removeItem('checkoutItem');
-            window.open(glLink, '_blank');
-            window.location.href = "./index.html";
+            
+            // 2. Direct, unblockable redirect in the current window tab
+            window.location.href = glLink;
         }
 
         function clearCart() {
