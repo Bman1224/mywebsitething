@@ -3,19 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Pixel & Code Shop</title>
+    <title>[ RETRO DEV HUB ]</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Press Start 2P', monospace; }
         body { background-color: #0b0c10; color: #66fcf1; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .terminal-container { background-color: #1f2833; border: 4px solid #45f3ff; box-shadow: 0 0 20px #45f3ff, inset 0 0 10px #45f3ff; padding: 30px; max-width: 650px; width: 100%; text-align: center; border-radius: 4px; position: relative; }
-        
-        /* HEADER AND BADGE STYLING */
+        .terminal-container { background-color: #1f2833; border: 4px solid #45f3ff; box-shadow: 0 0 20px #45f3ff, inset 0 0 10px #45f3ff; padding: 30px; max-width: 650px; width: 100%; text-align: center; border-radius: 4px; }
         .shop-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 4px double #45f3ff; padding-bottom: 15px; }
-        h1 { font-size: 1.1rem; text-shadow: 2px 2px #000; color: #fff; text-align: left; }
+        h1 { font-size: 1.1rem; text-shadow: 2px 2px #000; color: #fff; }
         .cart-badge { background-color: #ff0055; color: #fff; padding: 8px 12px; font-size: 0.55rem; text-decoration: none; border: 2px solid #fff; box-shadow: 2px 2px 0px #000; }
         .cart-badge:hover { background-color: #00ff66; color: #000; }
-
         .product-list { list-style: none; display: flex; flex-direction: column; gap: 25px; text-align: left; }
         .product-card { border: 3px dashed #45f3ff; padding: 15px; background-color: #0b0c10; display: flex; flex-direction: column; gap: 12px; }
         .product-link { font-size: 0.75rem; color: #fff; text-decoration: none; text-shadow: 1px 1px #000; display: inline-block; }
@@ -28,41 +25,32 @@
     <div class="terminal-container">
         <div class="shop-header">
             <h1>[ RETRO DEV HUB ]</h1>
-            <!-- Cart counter dynamic badge -->
-            <a href="cart.html" class="cart-badge">CART(<span id="badgeCount">0</span>)</a>
+            <a href="./cart.html" class="cart-badge">CART(<span id="badgeCount">0</span>)</a>
         </div>
-        
         <ul class="product-list">
             <li class="product-card">
-                <a href="sprite-pack.html" class="product-link">👾 2D Retro Sprite Pack ($5) &rarr;</a>
-                <button onclick="addToCart('2D Retro Sprite Pack', 5, 'https://gl.me/u/fmMSWk6qfXdd')" class="pixel-cart-btn">[+] ADD TO CART</button>
+                <a href="./sprite-pack.html" class="product-link">👾 2D Retro Sprite Pack ($5) &rarr;</a>
+                <button onclick="buyNow('sprite')" class="pixel-cart-btn">[+] ADD TO CART</button>
             </li>
             <li class="product-card">
-                <a href="godot-template.html" class="product-link">🚀 Godot 4 Physics Template ($10) &rarr;</a>
-                <button onclick="addToCart('Godot 4 Physics Template', 10, 'https://gl.me/u/fmMSWk6qfXdd')" class="pixel-cart-btn">[+] ADD TO CART</button>
+                <a href="./godot-template.html" class="product-link">🚀 Godot 4 Physics Template ($10) &rarr;</a>
+                <button onclick="buyNow('godot')" class="pixel-cart-btn">[+] ADD TO CART</button>
             </li>
             <li class="product-card">
-                <a href="bio-page.html" class="product-link">🌐 Custom Bio-Link Page ($15) &rarr;</a>
-                <button onclick="addToCart('Custom Bio-Link Page', 15, 'https://gl.me/u/fmMSWk6qfXdd')" class="pixel-cart-btn">[+] ADD TO CART</button>
+                <a href="./bio-page.html" class="product-link">🌐 Custom Bio-Link Page ($15) &rarr;</a>
+                <button onclick="buyNow('bio')" class="pixel-cart-btn">[+] ADD TO CART</button>
             </li>
         </ul>
     </div>
-
     <script>
+        function buyNow(itemCode) {
+            sessionStorage.setItem('checkoutItem', itemCode);
+            window.location.href = "./cart.html";
+        }
         function updateBadge() {
-            let cart = JSON.parse(localStorage.getItem('retroShopCart')) || [];
-            document.getElementById('badgeCount').innerText = cart.length;
+            let active = sessionStorage.getItem('checkoutItem');
+            document.getElementById('badgeCount').innerText = active ? "1" : "0";
         }
-
-        function addToCart(name, price, payLink) {
-            let cart = JSON.parse(localStorage.getItem('retroShopCart')) || [];
-            cart.push({ name: name, price: price, link: payLink });
-            localStorage.setItem('retroShopCart', JSON.stringify(cart));
-            updateBadge();
-            window.location.href = "cart.html";
-        }
-
-        // Run calculation when window boots up
         updateBadge();
     </script>
 </body>
