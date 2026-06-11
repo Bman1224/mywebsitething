@@ -15,14 +15,13 @@
         .empty-msg { font-size: 0.65rem; color: #ff0055; text-align: center; margin: 20px 0; }
         .total-box { display: flex; justify-content: space-between; font-size: 0.8rem; color: #00ff66; margin-bottom: 25px; padding-top: 10px; border-top: 4px double #00ff66; }
         
-        /* RETRO CUSTOM EMAIL FORM FIELD */
         .delivery-box { margin-bottom: 30px; border: 2px solid #45f3ff; padding: 15px; background-color: #0b0c10; }
         label { display: block; font-size: 0.55rem; color: #fff; margin-bottom: 10px; text-transform: uppercase; }
         .pixel-input { width: 100%; background-color: #1f2833; border: 3px solid #45f3ff; color: #00ff66; padding: 10px; font-size: 0.6rem; outline: none; }
         .pixel-input:focus { border-color: #ff0055; }
 
         .btn-row { display: flex; flex-direction: column; gap: 15px; align-items: center; }
-        .checkout-btn { display: block; width: 100%; text-align: center; background-color: #00ff66; color: #000; padding: 15px; font-size: 0.7rem; text-decoration: none; text-transform: uppercase; cursor: pointer; border: 4px solid #000; font-weight: bold; }
+        .checkout-btn { display: block; width: 100%; text-align: center; background-color: #00ff66; color: #000; padding: 15px; font-size: 0.7rem; text-transform: uppercase; cursor: pointer; border: 4px solid #000; font-weight: bold; }
         .checkout-btn:hover { background-color: #fff; box-shadow: 0 0 15px #00ff66; }
         .clear-btn { background: none; border: none; color: #ff0055; font-size: 0.55rem; cursor: pointer; text-transform: uppercase; }
         .clear-btn:hover { text-decoration: underline; }
@@ -44,15 +43,13 @@
             <span id="cartTotal">$0</span>
         </div>
 
-        <!-- EMAIL INPUT BLOCK -->
         <div class="delivery-box" id="deliveryForm" style="display: none;">
             <label for="buyerEmail">Enter delivery email address:</label>
             <input type="email" id="buyerEmail" class="pixel-input" placeholder="PLAYER@EMAIL.COM" oninput="validateForm()">
         </div>
 
         <div class="btn-row">
-            <!-- Checkout button is managed by function -->
-            <button onclick="startCheckout()" id="checkoutBtn" class="checkout-btn" style="display: none; width: 100%;">PROCEED TO GREENLIGHT</button>
+            <button onclick="startCheckout()" id="checkoutBtn" class="checkout-btn" style="display: none;">PROCEED TO GREENLIGHT</button>
             <button onclick="clearCart()" class="clear-btn">[ CLEAR CART INVENTORY ]</button>
             <a href="index.html" class="back-link">&larr; CONTINUE SHOPPING</a>
         </div>
@@ -89,23 +86,21 @@
 
             totalElement.innerText = '$' + total;
             
-            // Capture target url configuration details
             basePayLink = cart[cart.length - 1].link;
             deliveryForm.style.display = 'block';
             checkoutBtn.style.display = 'block';
             validateForm(); 
         }
 
-        // Ensures they actually write an email before hitting check-out
         function validateForm() {
             const emailInput = document.getElementById('buyerEmail').value;
             const checkoutBtn = document.getElementById('checkoutBtn');
             if (emailInput.includes('@') && emailInput.includes('.')) {
-                checkoutBtn.style.disabled = false;
+                checkoutBtn.disabled = false;
                 checkoutBtn.style.opacity = "1";
                 checkoutBtn.style.cursor = "pointer";
             } else {
-                checkoutBtn.style.disabled = true;
+                checkoutBtn.disabled = true;
                 checkoutBtn.style.opacity = "0.4";
                 checkoutBtn.style.cursor = "not-allowed";
             }
@@ -118,10 +113,7 @@
                 return;
             }
             
-            // Clear memory safely right as they leave to finish deal transaction
             localStorage.removeItem('retroShopCart');
-            
-            // Redirect smoothly into target destination portal window
             window.open(basePayLink, '_blank');
             window.location.href = "index.html"; 
         }
@@ -135,4 +127,3 @@
     </script>
 </body>
 </html>
-
