@@ -30,8 +30,18 @@
         </ul>
         <div class="btn-row">
             <a href="index.html" class="back-link">&larr; BACK TO SHOP</a>
-            <a href="PASTE_YOUR_GREENLIGHT_PAY_LINK_HERE" target="_blank" class="pixel-cart-btn">ADD TO CART ($5)</a>
+            <button onclick="addToCart('2D Retro Sprite Pack', 5, 'YOUR_LINK')" class="pixel-cart-btn">ADD TO CART ($5)</button>
         </div>
     </div>
+    <script>
+        function addToCart(name, price, payLink) {
+            let cart = JSON.parse(localStorage.getItem('retroShopCart')) || [];
+            // Add item to cart array
+            cart.push({ name: name, price: price, link: payLink });
+            localStorage.setItem('retroShopCart', JSON.stringify(cart));
+            // Send user to cart page automatically
+            window.location.href = "cart.html";
+        }
+    </script>
 </body>
 </html>
