@@ -10,18 +10,15 @@
         body { background-color: #0b0c10; color: #66fcf1; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         .cart-container { background-color: #1f2833; border: 4px solid #ff0055; box-shadow: 0 0 20px #ff0055; padding: 30px; max-width: 600px; width: 100%; border-radius: 4px; }
         h1 { font-size: 1.1rem; color: #fff; margin-bottom: 25px; text-shadow: 2px 2px #000; text-align: center; }
-        .cart-items { list-style: none; margin-bottom: 25px; }
         .cart-item { display: flex; justify-content: space-between; font-size: 0.65rem; border-bottom: 2px dashed #45f3ff; padding: 12px 0; color: #c5c6c7; }
         .empty-msg { font-size: 0.65rem; color: #ff0055; text-align: center; margin: 20px 0; }
         .total-box { display: flex; justify-content: space-between; font-size: 0.8rem; color: #00ff66; margin-bottom: 25px; padding-top: 10px; border-top: 4px double #00ff66; }
-        
         .delivery-box { margin-bottom: 30px; border: 2px solid #45f3ff; padding: 15px; background-color: #0b0c10; }
         label { display: block; font-size: 0.55rem; color: #fff; margin-bottom: 10px; text-transform: uppercase; }
         .pixel-input { width: 100%; background-color: #1f2833; border: 3px solid #45f3ff; color: #00ff66; padding: 10px; font-size: 0.6rem; outline: none; }
         .pixel-input:focus { border-color: #ff0055; }
-
         .btn-row { display: flex; flex-direction: column; gap: 15px; align-items: center; }
-        .checkout-btn { display: block; width: 100%; text-align: center; background-color: #00ff66; color: #000; padding: 15px; font-size: 0.7rem; text-transform: uppercase; cursor: pointer; border: 4px solid #000; font-weight: bold; }
+        .checkout-btn { display: block; width: 100%; text-align: center; background-color: #00ff66; color: #000; padding: 15px; font-size: 0.7rem; text-transform: uppercase; border: 4px solid #000; font-weight: bold; cursor: pointer; }
         .checkout-btn:hover { background-color: #fff; box-shadow: 0 0 15px #00ff66; }
         .clear-btn { background: none; border: none; color: #ff0055; font-size: 0.55rem; cursor: pointer; text-transform: uppercase; }
         .clear-btn:hover { text-decoration: underline; }
@@ -30,100 +27,85 @@
     </style>
 </head>
 <body>
-
     <div class="cart-container">
         <h1>[ YOUR INVENTORY ]</h1>
-        
-        <ul class="cart-items" id="cartList">
-            <!-- Loaded via Javascript -->
-        </ul>
-
+        <div id="cartContent"></div>
         <div class="total-box">
             <span>TOTAL:</span>
             <span id="cartTotal">$0</span>
         </div>
-
         <div class="delivery-box" id="deliveryForm" style="display: none;">
             <label for="buyerEmail">Enter delivery email address:</label>
             <input type="email" id="buyerEmail" class="pixel-input" placeholder="PLAYER@EMAIL.COM" oninput="validateForm()">
         </div>
-
         <div class="btn-row">
             <button onclick="startCheckout()" id="checkoutBtn" class="checkout-btn" style="display: none;">PROCEED TO GREENLIGHT</button>
             <button onclick="clearCart()" class="clear-btn">[ CLEAR CART INVENTORY ]</button>
-            <a href="index.html" class="back-link">&larr; CONTINUE SHOPPING</a>
+            <a href="./index.html" class="back-link">&larr; CONTINUE SHOPPING</a>
         </div>
     </div>
-
     <script>
-        let basePayLink = "";
+        // CRITICAL CONGFIGURATION PORTAL LINK
+        const glLink = "PASTE_YOUR_REAL_GL_ME_URL_HERE"; 
 
-        function loadCart() {
-            const cart = JSON.parse(localStorage.getItem('retroShopCart')) || [];
-            const listElement = document.getElementById('cartList');
-            const totalElement = document.getElementById('cartTotal');
-            const deliveryForm = document.getElementById('deliveryForm');
-            const checkoutBtn = document.getElementById('checkoutBtn');
-            
-            listElement.innerHTML = '';
-            let total = 0;
+        const products = {
+            'sprite': { name: "2D Retro Sprite Pack", price: 5 },
+            'godot': { name: "Godot 4 Physics Template", price: 10 },
+            'bio': { name: "Custom Bio-Link Page", price: 15 }
+        };
 
-            if (cart.length === 0) {
-                listElement.innerHTML = '<div class="empty-msg">YOUR CART IS CURRENTLY EMPTY</div>';
-                totalElement.innerText = '$0';
-                deliveryForm.style.display = 'none';
-                checkoutBtn.style.display = 'none';
+        function renderCart() {
+            const itemCode = sessionStorage.getItem('checkoutItem');
+            const display = document.getElementById('cartContent');
+            const totalBox = document.getElementById('cartTotal');
+            const form = document.getElementById('deliveryForm');
+            const btn = document.getElementById('checkoutBtn');
+
+            if (!itemCode || !products[itemCode]) {
+                display.innerHTML = '<div class="empty-msg">YOUR CART IS CURRENTLY EMPTY</div>';
+                totalBox.innerText = '$0';
+                form.style.display = 'none';
+                btn.style.display = 'none';
                 return;
             }
 
-            cart.forEach(item => {
-                const li = document.createElement('li');
-                li.className = 'cart-item';
-                li.innerHTML = `<span>${item.name}</span> <span>$${item.price}</span>`;
-                listElement.appendChild(li);
-                total += item.price;
-            });
-
-            totalElement.innerText = '$' + total;
-            
-            basePayLink = cart[cart.length - 1].link;
-            deliveryForm.style.display = 'block';
-            checkoutBtn.style.display = 'block';
-            validateForm(); 
+            const activeItem = products[itemCode];
+            display.innerHTML = `<div class="cart-item"><span>${activeItem.name}</span> <span>$${activeItem.price}</span></div>`;
+            totalBox.innerText = `$${activeItem.price}`;
+            form.style.display = 'block';
+            btn.style.display = 'block';
+            validateForm();
         }
 
         function validateForm() {
-            const emailInput = document.getElementById('buyerEmail').value;
-            const checkoutBtn = document.getElementById('checkoutBtn');
-            if (emailInput.includes('@') && emailInput.includes('.')) {
-                checkoutBtn.disabled = false;
-                checkoutBtn.style.opacity = "1";
-                checkoutBtn.style.cursor = "pointer";
+            const email = document.getElementById('buyerEmail').value;
+            const btn = document.getElementById('checkoutBtn');
+            if (email.includes('@') && email.includes('.')) {
+                btn.disabled = false;
+                btn.style.opacity = "1";
+                btn.style.cursor = "pointer";
             } else {
-                checkoutBtn.disabled = true;
-                checkoutBtn.style.opacity = "0.4";
-                checkoutBtn.style.cursor = "not-allowed";
+                btn.disabled = true;
+                btn.style.opacity = "0.4";
+                btn.style.cursor = "not-allowed";
             }
         }
 
         function startCheckout() {
-            const emailInput = document.getElementById('buyerEmail').value;
-            if (!emailInput.includes('@') || !emailInput.includes('.')) {
-                alert("Please input a valid delivery email first!");
-                return;
-            }
+            const email = document.getElementById('buyerEmail').value;
+            if (!email.includes('@') || !email.includes('.')) return;
             
-            localStorage.removeItem('retroShopCart');
-            window.open(basePayLink, '_blank');
-            window.location.href = "index.html"; 
+            sessionStorage.removeItem('checkoutItem');
+            window.open(glLink, '_blank');
+            window.location.href = "./index.html";
         }
 
         function clearCart() {
-            localStorage.removeItem('retroShopCart');
-            loadCart();
+            sessionStorage.removeItem('checkoutItem');
+            renderCart();
         }
 
-        loadCart();
+        renderCart();
     </script>
 </body>
 </html>
