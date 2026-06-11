@@ -15,7 +15,7 @@
         .btn-row { display: flex; gap: 15px; align-items: center; }
         .back-link { font-size: 0.6rem; color: #45f3ff; text-decoration: none; }
         .back-link:hover { text-decoration: underline; }
-        .pixel-cart-btn { display: inline-flex; align-items: center; justify-content: center; background-color: #ff0055; color: #fff; padding: 10px 15px; font-size: 0.6rem; text-decoration: none; text-transform: uppercase; cursor: pointer; border: 4px solid #000; box-shadow: 0 -4px #ff0055, 0 4px #ff0055, -4px 0 #ff0055, 4px 0 #ff0055; }
+        .pixel-cart-btn { display: inline-flex; align-items: center; justify-content: center; background-color: #ff0055; color: #fff; padding: 10px 15px; font-size: 0.6rem; border: 4px solid #000; cursor: pointer; box-shadow: 0 -4px #ff0055, 0 4px #ff0055, -4px 0 #ff0055, 4px 0 #ff0055; }
         .pixel-cart-btn:hover { background-color: #00ff66; color: #000; box-shadow: 0 -4px #00ff66, 0 4px #00ff66, -4px 0 #00ff66, 4px 0 #00ff66; }
     </style>
 </head>
@@ -24,23 +24,19 @@
         <h1>[ 👾 2D RETRO SPRITE PACK ]</h1>
         <p>A comprehensive 16x16 side-scroller visual pack optimized carefully for classic pixel density scaling configurations.</p>
         <ul class="spec-list">
-            <li>File format: PNG / Sprite Sheet transparent frames</li>
+            <li>File format: Organized transparent frame sheets (.PNG)</li>
             <li>Animations: Idle (4 frames), Run (8 frames), Jump (3 frames)</li>
-            <li>Includes: 42 modular grid environment tiles</li>
+            <li>Includes: 42 modular map tiles and sprite sheets</li>
         </ul>
         <div class="btn-row">
-            <a href="index.html" class="back-link">&larr; BACK TO SHOP</a>
-            <button onclick="addToCart('2D Retro Sprite Pack', 5, 'https://gl.me/u/fmMSWk6qfXdd')" class="pixel-cart-btn">ADD TO CART ($5)</button>
+            <a href="./index.html" class="back-link">&larr; BACK TO SHOP</a>
+            <button onclick="buyNow()" class="pixel-cart-btn">ADD TO CART ($5)</button>
         </div>
     </div>
     <script>
-        function addToCart(name, price, payLink) {
-            let cart = JSON.parse(localStorage.getItem('retroShopCart')) || [];
-            // Add item to cart array
-            cart.push({ name: name, price: price, link: payLink });
-            localStorage.setItem('retroShopCart', JSON.stringify(cart));
-            // Send user to cart page automatically
-            window.location.href = "cart.html";
+        function buyNow() {
+            sessionStorage.setItem('checkoutItem', 'sprite');
+            window.location.href = "./cart.html";
         }
     </script>
 </body>
