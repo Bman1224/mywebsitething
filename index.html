@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boss' Pixel Art & Code Shop</title>
+    <title>My Pixel & Code Shop</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Press Start 2P', monospace; }
@@ -13,14 +13,12 @@
         .subtitle { font-size: 0.7rem; color: #c5a3ff; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; }
         .product-list { list-style: none; display: flex; flex-direction: column; gap: 25px; text-align: left; }
         .product-card { border: 3px dashed #45f3ff; padding: 15px; background-color: #0b0c10; display: flex; flex-direction: column; gap: 12px; }
-        
-        /* Clickable Title Styling */
         .product-link { font-size: 0.8rem; color: #fff; text-decoration: none; text-shadow: 1px 1px #000; display: inline-block; }
         .product-link:hover { color: #45f3ff; text-decoration: underline; }
-        
-        .pixel-cart-btn { display: inline-flex; align-items: center; justify-content: center; align-self: flex-start; background-color: #ff0055; color: #fff; padding: 10px 15px; font-size: 0.6rem; text-decoration: none; text-transform: uppercase; cursor: pointer; border: 4px solid #000; box-shadow: 0 -4px #ff0055, 0 4px #ff0055, -4px 0 #ff0055, 4px 0 #ff0055, inset -2px -2px 0px #990033, inset 2px 2px 0px #ff6699; }
-        .pixel-cart-btn:hover { background-color: #00ff66; color: #000; box-shadow: 0 -4px #00ff66, 0 4px #00ff66, -4px 0 #00ff66, 4px 0 #00ff66, 0 0 15px #00ff66; }
-        .cart-icon { margin-right: 8px; font-weight: bold; }
+        .pixel-cart-btn { display: inline-flex; align-items: center; justify-content: center; align-self: flex-start; background-color: #ff0055; color: #fff; padding: 10px 15px; font-size: 0.6rem; text-decoration: none; text-transform: uppercase; cursor: pointer; border: 4px solid #000; box-shadow: 0 -4px #ff0055, 0 4px #ff0055, -4px 0 #ff0055, 4px 0 #ff0055; }
+        .pixel-cart-btn:hover { background-color: #00ff66; color: #000; box-shadow: 0 -4px #00ff66, 0 4px #00ff66, -4px 0 #00ff66, 4px 0 #00ff66; }
+        .view-cart-main { display: block; margin-top: 25px; color: #ff0055; font-size: 0.65rem; text-decoration: none; }
+        .view-cart-main:hover { text-decoration: underline; color: #00ff66; }
     </style>
 </head>
 <body>
@@ -28,22 +26,31 @@
         <h1>[ RETRO DEV HUB ]</h1>
         <div class="subtitle">Pixel Art & Code Asset Shop</div>
         <ul class="product-list">
-            <!-- PRODUCT 1 -->
             <li class="product-card">
                 <a href="sprite-pack.html" class="product-link">👾 2D Retro Sprite Pack ($5) &rarr;</a>
-                <a href="PASTE_YOUR_GREENLIGHT_PAY_LINK_HERE" target="_blank" class="pixel-cart-btn"><span class="cart-icon">[+]</span>ADD TO CART</a>
+                <button onclick="addToCart('2D Retro Sprite Pack', 5, 'YOUR_SPRITE_PACK_GREENLIGHT_URL')" class="pixel-cart-btn">[+] ADD TO CART</button>
             </li>
-            <!-- PRODUCT 2 -->
             <li class="product-card">
                 <a href="godot-template.html" class="product-link">🚀 Godot 4 Physics Template ($10) &rarr;</a>
-                <a href="PASTE_YOUR_GREENLIGHT_PAY_LINK_HERE" target="_blank" class="pixel-cart-btn"><span class="cart-icon">[+]</span>ADD TO CART</a>
+                <button onclick="addToCart('Godot 4 Physics Template', 10, 'YOUR_GODOT_TEMPLATE_GREENLIGHT_URL')" class="pixel-cart-btn">[+] ADD TO CART</button>
             </li>
-            <!-- PRODUCT 3 -->
             <li class="product-card">
                 <a href="bio-page.html" class="product-link">🌐 Custom Bio-Link Page ($15) &rarr;</a>
-                <a href="PASTE_YOUR_GREENLIGHT_PAY_LINK_HERE" target="_blank" class="pixel-cart-btn"><span class="cart-icon">[+]</span>ADD TO CART</a>
+                <button onclick="addToCart('Custom Bio-Link Page', 15, 'YOUR_BIO_PAGE_GREENLIGHT_URL')" class="pixel-cart-btn">[+] ADD TO CART</button>
             </li>
         </ul>
+        <a href="cart.html" class="view-cart-main">[ VIEW MY CART ]</a>
     </div>
+
+    <script>
+        function addToCart(name, price, payLink) {
+            let cart = JSON.parse(localStorage.getItem('retroShopCart')) || [];
+            // Add item to cart array
+            cart.push({ name: name, price: price, link: payLink });
+            localStorage.setItem('retroShopCart', JSON.stringify(cart));
+            // Send user to cart page automatically
+            window.location.href = "cart.html";
+        }
+    </script>
 </body>
 </html>
