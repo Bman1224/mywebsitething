@@ -1,1 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Inventory Cart</title>
+    <link href="https://googleapis.com" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Press Start 2P', monospace; }
+        body { background-color: #0b0c10; color: #66fcf1; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .cart-container { background-color: #1f2833; border: 4px solid #ff0055; box-shadow: 0 0 20px #ff0055; padding: 30px; max-width: 600px; width: 100%; border-radius: 4px; }
+        h1 { font-size: 1.1rem; color: #fff; margin-bottom: 25px; text-shadow: 2px 2px #000; text-align: center; }
+        .cart-items { list-style: none; margin-bottom: 25px; }
+        .cart-item { display: flex; justify-content: space-between; font-size: 0.65rem; border-bottom: 2px dashed #45f3ff; padding: 12px 0; color: #c5c6c7; }
+        .empty-msg { font-size: 0.65rem; color: #ff0055; text-align: center; margin: 20px 0; }
+        .total-box { display: flex; justify-content: space-between; font-size: 0.8rem; color: #00ff66; margin-bottom: 25px; padding-top: 10px; border-top: 4px double #00ff66; }
+        
+        /* RETRO CUSTOM EMAIL FORM FIELD */
+        .delivery-box { margin-bottom: 30px; border: 2px solid #45f3ff; padding: 15px; background-color: #0b0c10; }
+        label { display: block; font-size: 0.55rem; color: #fff; margin-bottom: 10px; text-transform: uppercase; }
+        .pixel-input { width: 100%; background-color: #1f2833; border: 3px solid #45f3ff; color: #00ff66; padding: 10px; font-size: 0.6rem; outline: none; }
+        .pixel-input:focus { border-color: #ff0055; }
+
+        .btn-row { display: flex; flex-direction: column; gap: 15px; align-items: center; }
+        .checkout-btn { display: block; width: 100%; text-align: center; background-color: #00ff66; color: #000; padding: 15px; font-size: 0.7rem; text-decoration: none; text-transform: uppercase; cursor: pointer; border: 4px solid #000; font-weight: bold; }
+        .checkout-btn:hover { background-color: #fff; box-shadow: 0 0 15px #00ff66; }
+        .clear-btn { background: none; border: none; color: #ff0055; font-size: 0.55rem; cursor: pointer; text-transform: uppercase; }
+        .clear-btn:hover { text-decoration: underline; }
+        .back-link { font-size: 0.6rem; color: #45f3ff; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <div class="cart-container">
+        <h1>[ YOUR INVENTORY ]</h1>
+        
+        <ul class="cart-items" id="cartList">
+            <!-- Loaded via Javascript -->
+        </ul>
+
+        <div class="total-box">
+            <span>TOTAL:</span>
+            <span id="cartTotal">$0</span>
+        </div>
+
+        <!-- EMAIL INPUT BLOCK -->
+        <div class="delivery-box" id="deliveryForm" style="display: none;">
+            <label for="buyerEmail">Enter delivery email address:</label>
+            <input type="email" id="buyerEmail" class="pixel-input" placeholder="PLAYER@EMAIL.COM" oninput="validateForm()">
+        </div>
+
+        <div class="btn-row">
+            <!-- Checkout button is managed by function -->
+            <button onclick="startCheckout()" id="checkoutBtn" class="checkout-btn" style="display: none; width: 100%;">PROCEED TO GREENLIGHT</button>
+            <button onclick="clearCart()" class="clear-btn">[ CLEAR CART INVENTORY ]</button>
+            <a href="index.html" class="back-link">&larr; CONTINUE SHOPPING</a>
+        </div>
+    </div>
+
+    <script>
+        let basePayLink = "";
+
+        function loadCart() {
+            const cart = JSON.parse(localStorage.getItem('retroShopCart')) || [];
+            const listElement = document.getElementById('cartList');
+            const totalElement = document.getElementById('cartTotal');
+            const deliveryForm = document.getElementById('deliveryForm');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+            
+            listElement.innerHTML = '';
+            let total = 0;
+
+            if (cart.length === 0) {
+                listElement.innerHTML = '<div class="empty-msg">YOUR CART IS CURRENTLY EMPTY</div>';
+                totalElement.innerText = '$0';
+                deliveryForm.style.display = 'none';
+                checkoutBtn.style.display = 'none';
+                return;
+            }
+
+            cart.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'cart-item';
+                li.innerHTML = `<span>${item.name}</span> <span>$${item.price}</span>`;
+                listElement.appendChild(li);
+                total += item.price;
+            });
+
+            totalElement.innerText = '$' + total;
+            
+            // Capture target url configuration details
+            basePayLink = cart[cart.length - 1].link;
+            deliveryForm.style.display = 'block';
+            checkoutBtn.style.display = 'block';
+            validateForm(); 
+        }
+
+        // Ensures they actually write an email before hitting check-out
+        function validateForm() {
+            const emailInput = document.getElementById('buyerEmail').value;
+            const checkoutBtn = document.getElementById('checkoutBtn');
+            if (emailInput.includes('@') && emailInput.includes('.')) {
+                checkoutBtn.style.disabled = false;
+                checkoutBtn.style.opacity = "1";
+                checkoutBtn.style.cursor = "pointer";
+            } else {
+                checkoutBtn.style.disabled = true;
+                checkoutBtn.style.opacity = "0.4";
+                checkoutBtn.style.cursor = "not-allowed";
+            }
+        }
+
+        function startCheckout() {
+            const emailInput = document.getElementById('buyerEmail').value;
+            if (!emailInput.includes('@') || !emailInput.includes('.')) {
+                alert("Please input a valid delivery email first!");
+                return;
+            }
+            
+            // Clear memory safely right as they leave to finish deal transaction
+            localStorage.removeItem('retroShopCart');
+            
+            // Redirect smoothly into target destination portal window
+            window.open(basePayLink, '_blank');
+            window.location.href = "index.html"; 
+        }
+
+        function clearCart() {
+            localStorage.removeItem('retroShopCart');
+            loadCart();
+        }
+
+        loadCart();
+    </script>
+</body>
+</html>
 
